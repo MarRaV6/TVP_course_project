@@ -30,4 +30,16 @@ class Node:
     def __repr__(self):
         return "Node({}, {})".format(self.kind, self.value)
 
-    __str__ = __repr__
+    def __str__(self, level=0):
+        ident = ' ' * 4 * level
+
+        if level == 0:
+            result = '{}'.format(self.kind.name)
+        else:
+            result = '\n{}+-{}({})'.format(ident, self.kind.name, self.value if self.value else '')
+
+        for c in [self.op1, self.op2, self.op3]:
+            if c:
+                result += c.__str__(level=level+1)
+
+        return result
