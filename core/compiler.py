@@ -1,4 +1,4 @@
-from .parser import Parser
+from .ast import NodeType
 from .asm import ASM
 
 
@@ -16,35 +16,35 @@ class Compiler:
         self.pc = self.pc + 1
 
     def compile(self, node):
-        if node.kind == Parser.VAR:
+        if node.kind == NodeType.VAR:
             self.gen(ASM.IFETCH)
             self.gen(node.value)
 
-        elif node.kind == Parser.CONST:
+        elif node.kind == NodeType.CONST:
             self.gen(ASM.IPUSH)
             self.gen(node.value)
 
-        elif node.kind == Parser.ADD:
+        elif node.kind == NodeType.ADD:
             self.compile(node.op1)
             self.compile(node.op2)
             self.gen(ASM.IADD)
 
-        elif node.kind == Parser.SUB:
+        elif node.kind == NodeType.SUB:
             self.compile(node.op1)
             self.compile(node.op2)
             self.gen(ASM.ISUB)
 
-        elif node.kind == Parser.LT:
+        elif node.kind == NodeType.LT:
             self.compile(node.op1)
             self.compile(node.op2)
             self.gen(ASM.ILT)
 
-        elif node.kind == Parser.SET:
+        elif node.kind == NodeType.SET:
             self.compile(node.op2)
             self.gen(ASM.ISTORE)
             self.gen(node.op1.value)
 
-        elif node.kind == Parser.IF1:
+        elif node.kind == NodeType.IF1:
             self.compile(node.op1)
             self.gen(ASM.JZ)
             addr = self.pc
@@ -52,7 +52,7 @@ class Compiler:
             self.compile(node.op2)
             self.program[addr] = self.pc
 
-        elif node.kind == Parser.IF2:
+        elif node.kind == NodeType.IF2:
             self.compile(node.op1)
             self.gen(ASM.JZ)
             addr1 = self.pc
@@ -65,7 +65,7 @@ class Compiler:
             self.compile(node.op3)
             self.program[addr2] = self.pc
 
-        elif node.kind == Parser.WHILE:
+        elif node.kind == NodeType.WHILE:
             addr1 = self.pc
             self.compile(node.op1)
             self.gen(ASM.JZ)
@@ -76,26 +76,26 @@ class Compiler:
             self.gen(addr1)
             self.program[addr2] = self.pc
 
-        elif node.kind == Parser.DO:
+        elif node.kind == NodeType.DO:
             addr = self.pc
             self.compile(node.op1)
             self.compile(node.op2)
             self.gen(ASM.JNZ)
             self.gen(addr)
 
-        elif node.kind == Parser.SEQ:
+        elif node.kind == NodeType.SEQ:
             self.compile(node.op1)
             self.compile(node.op2)
 
-        elif node.kind == Parser.EXPR:
+        elif node.kind == NodeType.EXPR:
             self.compile(node.op1)
             self.gen(ASM.IPOP)
 
-        elif node.kind == Parser.PRINT:
+        elif node.kind == NodeType.PRINT:
             self.compile(node.op1)
             self.gen(ASM.PRINT)
 
-        elif node.kind == Parser.PROG:
+        elif node.kind == NodeType.PROGRAM:
             self.compile(node.op1)
             self.gen(ASM.HALT)
 

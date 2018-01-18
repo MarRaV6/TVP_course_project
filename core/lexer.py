@@ -1,16 +1,21 @@
+import sys
+
+from .token import Token
+
+
 class Lexer:
-    NUM, ID, IF, ELSE, WHILE, DO, LBRA, RBRA, LPAR, RPAR, PLUS, MINUS, LESS, \
-    EQUAL, SEMICOLON, EOF, PRINT = range(17)
 
-    SYMBOLS = {'{': LBRA, '}': RBRA, '=': EQUAL, ';': SEMICOLON, '(': LPAR,
-               ')': RPAR, '+': PLUS, '-': MINUS, '<': LESS}
+    SYMBOLS = {'{': Token.LBRA, '}': Token.RBRA, '=': Token.EQUAL, ';': Token.SEMICOLON, '(': Token.LPAR,
+               ')': Token.RPAR, '+': Token.PLUS, '-': Token.MINUS, '<': Token.LESS}
 
-    WORDS = {'if': IF, 'else': ELSE, 'do': DO, 'while': WHILE, 'print': PRINT}
+    WORDS = {'if': Token.IF, 'else': Token.ELSE, 'do': Token.DO, 'while': Token.WHILE, 'print': Token.PRINT}
 
     def __init__(self, program_text):
-        self.ptext = program_text
+        self.program_text = program_text
         self.cur = 0
         self.ch = ' '
+        self.value = None
+        self.sym = None
 
     def error(self, msg):
         print('Lexer error: ', msg)
@@ -18,7 +23,7 @@ class Lexer:
 
     def getc(self):
         try:
-            self.ch = self.ptext[self.cur]
+            self.ch = self.program_text[self.cur]
             self.cur += 1
         except IndexError:
             self.ch = ''
@@ -28,7 +33,7 @@ class Lexer:
         self.sym = None
         while self.sym is None:
             if len(self.ch) == 0:
-                self.sym = Lexer.EOF
+                self.sym = Token.EOF
 
             elif self.ch.isspace():
                 self.getc()
@@ -43,7 +48,7 @@ class Lexer:
                     intval = intval * 10 + int(self.ch)
                     self.getc()
                 self.value = intval
-                self.sym = Lexer.NUM
+                self.sym = Token.NUM
 
             elif self.ch.isalpha():
                 ident = ''
@@ -56,7 +61,7 @@ class Lexer:
 
                 # если после последовательности букв осталась одна, это переменная
                 elif len(ident) == 1:
-                    self.sym = Lexer.ID
+                    self.sym = Token.ID
                     self.value = ord(ident) - ord('a')
 
                 else:
