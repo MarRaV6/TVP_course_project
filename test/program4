@@ -3,7 +3,9 @@
     b = 4;
 
     IF (0 < a) {
-        print(1);
+        IF (1) {
+            print(1);
+        }
     }
 
     IF (b > 5) {

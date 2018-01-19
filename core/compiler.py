@@ -110,6 +110,11 @@ class Compiler:
             self.compile(node.op1)
             self.gen(ASM.PRINT)
 
+        elif node.kind == NodeType.CMPR:
+            self.compile(node.op1)
+            self.compile(node.op2)
+            self.gen(ASM.ICMPR)
+
         elif node.kind == NodeType.PROGRAM:
             self.compile(node.op1)
             self.gen(ASM.HALT)

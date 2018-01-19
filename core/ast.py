@@ -20,6 +20,7 @@ class NodeType(IntEnum):
     MULTI = 15
     RT = 16
     SEG = 17 #обычное деление
+    CMPR = 18
     #DIV = 18 #
     #MOD = 19
 

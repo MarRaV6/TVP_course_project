@@ -33,3 +33,4 @@ class ASM(IntEnum):
     IMULTI = 12
     ISEG = 13
     IRT = 14
+    ICMPR = 15
