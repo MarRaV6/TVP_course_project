@@ -6,7 +6,7 @@ class VirtualMachine:
         self.EPS = EPS
 
     def run(self, program):
-        var = ['$' for i in range(26)] #TODO заменить на объект
+        var = ['$' for i in range(26)]
         stack = []
         pc = 0
         while True:

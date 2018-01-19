@@ -1,5 +1,6 @@
 import sys
 
+from core.exceptions import LexerError
 from .token import Token
 
 
@@ -12,75 +13,87 @@ class Lexer:
     WORDS = {'if': Token.IF, 'else': Token.ELSE, 'do': Token.DO, 'while': Token.WHILE, 'print': Token.PRINT}
 
     def __init__(self, program_text):
-        self.program_text = program_text
-        self.cur = 0
-        self.ch = ' '
-        self.value = None
-        self.sym = None
+        self._program_text = program_text
+        self._current_symbol = 0
+        self._ch = ' '
+        self._value = None
+        self._sym = None
+
+    @property
+    def value(self):
+        return self._value
+
+    @property
+    def sym(self):
+        return self._sym
+
+    @property
+    def current_symbol(self):
+        return self._current_symbol
+
+    @property
+    def program_text(self):
+        return self._program_text
 
     def error(self, msg):
-        print('Lexer error: ', msg)
-        sys.exit(1)
+        raise LexerError('Lexer error: {}\nCurrent sym: {}'.format(msg, self._current_symbol))
 
     def getc(self):
         try:
-            self.ch = self.program_text[self.cur]
-            self.cur += 1
+            self._ch = self._program_text[self._current_symbol]
+            self._current_symbol += 1
         except IndexError:
-            self.ch = ''
+            self._ch = ''
 
     def next_token(self):
-        self.value = None
-        self.sym = None
-        while self.sym is None:
-            if len(self.ch) == 0:
-                self.sym = Token.EOF
+        self._value = None
+        self._sym = None
+        while self._sym is None:
+            if len(self._ch) == 0:
+                self._sym = Token.EOF
 
-            elif self.ch.isspace():
+            elif self._ch.isspace():
                 self.getc()
 
-            elif self.ch in Lexer.SYMBOLS:
-                self.sym = Lexer.SYMBOLS[self.ch]
+            elif self._ch in Lexer.SYMBOLS:
+                self._sym = Lexer.SYMBOLS[self._ch]
                 self.getc()
 
-            elif self.ch.isdigit() or (self.ch == '0'):
+            elif self._ch.isdigit() or (self._ch == '0'):
                 intval = 0
-                before_point = 0.0
-                flag = True
+                floatval = 0.0
+                find_point = True
                 i = 1
-                while self.ch.isdigit() or (self.ch == '.') or (self.ch == '0'):
-                    if self.ch == '.':
-                        flag = False
+                while self._ch.isdigit() or (self._ch == '.') or (self._ch == '0'):
+                    if self._ch == '.':
+                        find_point = False
                         self.getc()
                     else:
-                        if flag:
-                            intval = intval * 10 + int(self.ch)
-                            self.getc()
+                        if find_point:
+                            intval = intval * 10 + int(self._ch)
                         else:
-                            before_point = before_point + (0.1 ** i) * int(self.ch)
+                            floatval = floatval + (0.1 ** i) * int(self._ch)
                             i += 1
-                            self.getc()
-                if flag:
-                    self.value = intval
-                else:
-                    self.value = intval + before_point
-                self.sym = Token.NUM
+                        self.getc()
 
-            elif self.ch.isalpha():
+                self._value = intval if find_point else intval + floatval
+                self._sym = Token.NUM
+
+            elif self._ch.isalpha():
                 ident = ''
-                while self.ch.isalpha():
-                    ident = ident + self.ch.lower()
+                while self._ch.isalpha():
+                    ident = ident + self._ch.lower()
                     self.getc()
 
                 if ident in Lexer.WORDS:
-                    self.sym = Lexer.WORDS[ident]
+                    self._sym = Lexer.WORDS[ident]
 
                 # если после последовательности букв осталась одна, это переменная
                 elif len(ident) == 1:
-                    self.sym = Token.ID
-                    self.value = ord(ident) - ord('a')
+                    self._sym = Token.ID
+                    self._value = ord(ident) - ord('a')
 
                 else:
-                    self.error('Unknown identifier: ' + ident) #TODO добавть возможность ввода многосимвольного имени переменной
+                    self.error('Unknown identifier: ' + ident)
             else:
-                self.error('Unexpected symbol: ' + self.ch)
+                self.error('Unexpected symbol: ' + self._ch)

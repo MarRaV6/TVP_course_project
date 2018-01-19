@@ -1,16 +1,18 @@
-import sys
-
-from .lexer import Token
+from core.exceptions import ParserError
+from .lexer import Token, Lexer
 from .ast import Node, NodeType
 
 
 class Parser:
-    def __init__(self, lexer):
+    _MATH_OP = [Token.PLUS, Token.MINUS, Token.MULTI, Token.SEG, Token.MOD]
+
+    def __init__(self, lexer: Lexer):
         self.lexer = lexer
 
     def error(self, msg):
-        print('Parser error:', msg)
-        sys.exit(1)
+        cs = self.lexer.current_symbol
+        code_fragment = self.lexer.program_text[0 if cs < 15 else cs-10 : cs+2]
+        raise ParserError('Parser error: {}\nFragment: ...\n{}\n...'.format(msg, code_fragment))
 
     def term(self):
         if self.lexer.sym == Token.ID:
@@ -26,8 +28,7 @@ class Parser:
 
     def calculate(self):
         n = self.term()
-        while self.lexer.sym == Token.PLUS or self.lexer.sym == Token.MINUS or self.lexer.sym == Token.MULTI \
-                or self.lexer.sym == Token.SEG or self.lexer.sym == Token.MOD:
+        while self.lexer.sym in Parser._MATH_OP:
             if self.lexer.sym == Token.PLUS:
                 kind = NodeType.ADD
             elif self.lexer.sym == Token.MINUS:
