@@ -18,6 +18,7 @@ class NodeType(IntEnum):
     PRINT = 13
     PROGRAM = 14
     MULTI = 15
+    RT = 16
 
 
 class Node:

@@ -31,3 +31,4 @@ class ASM(IntEnum):
     PRINT = 10
     HALT = 11
     IMULTI = 12
+    IRT = 13

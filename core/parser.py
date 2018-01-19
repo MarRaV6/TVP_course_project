@@ -42,6 +42,9 @@ class Parser:
         if self.lexer.sym == Token.LESS:
             self.lexer.next_token()
             n = Node(NodeType.LT, op1=n, op2=self.calculate())
+        elif self.lexer.sym == Token.MORE:
+            self.lexer.next_token()
+            n = Node(NodeType.RT, op1=n, op2=self.calculate())
         return n
 
     def expr(self):

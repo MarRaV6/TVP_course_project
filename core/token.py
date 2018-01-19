@@ -20,4 +20,5 @@ class Token(IntEnum):
     SEMICOLON = 15
     PRINT = 16
     EOF = 17
+    MORE = 18
 

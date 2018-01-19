@@ -44,6 +44,11 @@ class Compiler:
             self.compile(node.op2)
             self.gen(ASM.ILT)
 
+        elif node.kind == NodeType.RT:
+            self.compile(node.op1)
+            self.compile(node.op2)
+            self.gen(ASM.IRT)
+
         elif node.kind == NodeType.SET:
             self.compile(node.op2)
             self.gen(ASM.ISTORE)
