@@ -1,9 +1,9 @@
 class Lexer:
     NUM, ID, IF, ELSE, WHILE, DO, LBRA, RBRA, LPAR, RPAR, PLUS, MINUS, LESS, \
-    EQUAL, SEMICOLON, EOF, PRINT = range(17)
+    EQUAL, SEMICOLON, EOF, PRINT, MULTI = range(18)
 
     SYMBOLS = {'{': LBRA, '}': RBRA, '=': EQUAL, ';': SEMICOLON, '(': LPAR,
-               ')': RPAR, '+': PLUS, '-': MINUS, '<': LESS}
+               ')': RPAR, '+': PLUS, '-': MINUS, '<': LESS, '*': MULTI}
 
     WORDS = {'if': IF, 'else': ELSE, 'do': DO, 'while': WHILE, 'print': PRINT}
 
@@ -39,7 +39,7 @@ class Lexer:
 
             elif self.ch.isdigit():
                 intval = 0
-                while self.ch.isdigit():
+                while self.ch.isdigit() or (self.ch == '.'):
                     intval = intval * 10 + int(self.ch)
                     self.getc()
                 self.value = intval

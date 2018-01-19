@@ -34,6 +34,11 @@ class Compiler:
             self.compile(node.op2)
             self.gen(ASM.ISUB)
 
+        elif node.kind == Parser.MULTI:
+            self.compile(node.op1)
+            self.compile(node.op2)
+            self.gen(ASM.IMULTI)
+
         elif node.kind == Parser.LT:
             self.compile(node.op1)
             self.compile(node.op2)

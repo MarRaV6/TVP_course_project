@@ -30,3 +30,4 @@ class ASM(IntEnum):
     JMP = 9
     PRINT = 10
     HALT = 11
+    IMULTI = 12

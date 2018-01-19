@@ -18,7 +18,7 @@ class Node:
 
 
 class Parser:
-    VAR, CONST, ADD, SUB, LT, SET, IF1, IF2, WHILE, DO, EMPTY, SEQ, EXPR, PROG, PRINT = range(15)
+    VAR, CONST, ADD, SUB, LT, SET, IF1, IF2, WHILE, DO, EMPTY, SEQ, EXPR, PROG, PRINT, MULTI = range(16)
 
     def __init__(self, lexer):
         self.lexer = lexer
@@ -39,22 +39,24 @@ class Parser:
         else:
             return self.paren_expr()
 
-    def summa(self):
+    def calculate(self):
         n = self.term()
-        while self.lexer.sym == Lexer.PLUS or self.lexer.sym == Lexer.MINUS:
+        while self.lexer.sym == Lexer.PLUS or self.lexer.sym == Lexer.MINUS or self.lexer.sym == Lexer.MULTI:
             if self.lexer.sym == Lexer.PLUS:
                 kind = Parser.ADD
-            else:
+            elif self.lexer.sym == Lexer.MINUS:
                 kind = Parser.SUB
+            else:
+                kind = Parser.MULTI
             self.lexer.next_token()
             n = Node(kind, op1=n, op2=self.term())
         return n
 
     def test(self):
-        n = self.summa()
+        n = self.calculate()
         if self.lexer.sym == Lexer.LESS:
             self.lexer.next_token()
-            n = Node(Parser.LT, op1=n, op2=self.summa())
+            n = Node(Parser.LT, op1=n, op2=self.calculate())
         return n
 
     def expr(self):
