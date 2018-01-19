@@ -3,7 +3,7 @@ from .asm import ASM
 
 class VirtualMachine:
     def run(self, program):
-        var = [0 for i in range(26)] #TODO заменить на объект
+        var = ['$' for i in range(26)] #TODO заменить на объект
         stack = []
         pc = 0
         while True:

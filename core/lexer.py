@@ -42,12 +42,27 @@ class Lexer:
                 self.sym = Lexer.SYMBOLS[self.ch]
                 self.getc()
 
-            elif self.ch.isdigit():
+            elif self.ch.isdigit() or (self.ch == '0'):
                 intval = 0
-                while self.ch.isdigit() or (self.ch == '.'):
-                    intval = intval * 10 + int(self.ch)
-                    self.getc()
-                self.value = intval
+                before_point = 0.0
+                flag = True
+                i = 1
+                while self.ch.isdigit() or (self.ch == '.') or (self.ch == '0'):
+                    if self.ch == '.':
+                        flag = False
+                        self.getc()
+                    else:
+                        if flag:
+                            intval = intval * 10 + int(self.ch)
+                            self.getc()
+                        else:
+                            before_point = before_point + (0.1 ** i) * int(self.ch)
+                            i += 1
+                            self.getc()
+                if flag:
+                    self.value = intval
+                else:
+                    self.value = intval + before_point
                 self.sym = Token.NUM
 
             elif self.ch.isalpha():

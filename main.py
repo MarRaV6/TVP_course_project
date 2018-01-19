@@ -39,7 +39,7 @@ def run_tests():
 
             print('Execution finished.')
             for i in range(26):
-                if vars[i] != 0:
+                if vars[i] != '$':
                     print('{} = {}'.format(chr(i + ord('a')), vars[i]))
 
         print('\n' + '#' * 40 + '\n')
