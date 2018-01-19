@@ -15,10 +15,11 @@ class Token(IntEnum):
     PLUS = 10
     MINUS = 11
     MULTI = 12
-    LESS = 13
-    EQUAL = 14
-    SEMICOLON = 15
-    PRINT = 16
-    EOF = 17
-    MORE = 18
+    SEG = 13
+    LESS = 14
+    EQUAL = 15
+    SEMICOLON = 16
+    PRINT = 17
+    EOF = 18
+    MORE = 19
 

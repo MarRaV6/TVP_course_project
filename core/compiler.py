@@ -39,6 +39,11 @@ class Compiler:
             self.compile(node.op2)
             self.gen(ASM.IMULTI)
 
+        elif node.kind == NodeType.SEG:
+            self.compile(node.op1)
+            self.compile(node.op2)
+            self.gen(ASM.ISEG)
+
         elif node.kind == NodeType.LT:
             self.compile(node.op1)
             self.compile(node.op2)

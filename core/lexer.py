@@ -6,7 +6,8 @@ from .token import Token
 class Lexer:
 
     SYMBOLS = {'{': Token.LBRA, '}': Token.RBRA, '=': Token.EQUAL, ';': Token.SEMICOLON, '(': Token.LPAR,
-               ')': Token.RPAR, '+': Token.PLUS, '-': Token.MINUS, '*': Token.MULTI, '<': Token.LESS, '>': Token.MORE}
+               ')': Token.RPAR, '+': Token.PLUS, '-': Token.MINUS, '*': Token.MULTI, '/': Token.SEG,
+               '<': Token.LESS, '>': Token.MORE}
 
     WORDS = {'if': Token.IF, 'else': Token.ELSE, 'do': Token.DO, 'while': Token.WHILE, 'print': Token.PRINT}
 

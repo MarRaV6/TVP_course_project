@@ -19,6 +19,9 @@ class NodeType(IntEnum):
     PROGRAM = 14
     MULTI = 15
     RT = 16
+    SEG = 17 #обычное деление
+    #DIV = 18 #
+    #MOD = 19
 
 
 class Node:
