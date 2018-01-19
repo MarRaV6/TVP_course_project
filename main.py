@@ -1,13 +1,13 @@
 # TODO сделать красиво
 # TODO (?) запуск файла программы через вызов main.py или compiler и vm
 # TODO больше тестов
+
 # TODO status code
-
-# TODO ISINT
-# TODO равенство
-
+# TODO BREAK, DIV
+# TODO INPUT
 # TODO определить все простые числа в интервале
 # TODO комментарии
+# TODO отрицательные числа
 
 
 import os
