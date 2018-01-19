@@ -1,7 +1,11 @@
+# TODO сделать красиво
+# TODO (?) запуск файла программы через вызов main.py или compiler и vm
+# TODO больше тестов
+
+
 import os
 from os import path as osp
 
-#TODO сделать красиво
 from core.compiler import Compiler
 from core.lexer import Lexer
 from core.parser import Parser
@@ -26,6 +30,8 @@ def run_tests():
             parser = Parser(Lexer(text))
 
             ast = parser.parse()
+
+            print(ast)  # выведем дерево
 
             program = compiler.compile(ast)
 

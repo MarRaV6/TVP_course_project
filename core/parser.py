@@ -1,25 +1,10 @@
 import sys
 
-from .lexer import Lexer
-
-
-class Node:
-    def __init__(self, kind, value=None, op1=None, op2=None, op3=None):
-        self.kind = kind
-        self.value = value
-        self.op1 = op1
-        self.op2 = op2
-        self.op3 = op3
-
-    def __repr__(self):
-        return "Node({}, {})".format(self.kind, self.value)
-
-    __str__ = __repr__
+from .lexer import Token
+from .ast import Node, NodeType
 
 
 class Parser:
-    VAR, CONST, ADD, SUB, LT, SET, IF1, IF2, WHILE, DO, EMPTY, SEQ, EXPR, PROG, PRINT, MULTI = range(16)
-
     def __init__(self, lexer):
         self.lexer = lexer
 
@@ -28,12 +13,12 @@ class Parser:
         sys.exit(1)
 
     def term(self):
-        if self.lexer.sym == Lexer.ID:
-            n = Node(Parser.VAR, self.lexer.value)
+        if self.lexer.sym == Token.ID:
+            n = Node(NodeType.VAR, self.lexer.value)
             self.lexer.next_token()
             return n
-        elif self.lexer.sym == Lexer.NUM:
-            n = Node(Parser.CONST, self.lexer.value)
+        elif self.lexer.sym == Token.NUM:
+            n = Node(NodeType.CONST, self.lexer.value)
             self.lexer.next_token()
             return n
         else:
@@ -41,39 +26,39 @@ class Parser:
 
     def calculate(self):
         n = self.term()
-        while self.lexer.sym == Lexer.PLUS or self.lexer.sym == Lexer.MINUS or self.lexer.sym == Lexer.MULTI:
-            if self.lexer.sym == Lexer.PLUS:
-                kind = Parser.ADD
-            elif self.lexer.sym == Lexer.MINUS:
-                kind = Parser.SUB
+        while self.lexer.sym == Token.PLUS or self.lexer.sym == Token.MINUS or self.lexer.sym == Token.MULTI:
+            if self.lexer.sym == Token.PLUS:
+                kind = NodeType.ADD
+            elif self.lexer.sym == Token.MINUS:
+                kind = NodeType.SUB
             else:
-                kind = Parser.MULTI
+                kind = NodeType.MULTI
             self.lexer.next_token()
             n = Node(kind, op1=n, op2=self.term())
         return n
 
     def test(self):
         n = self.calculate()
-        if self.lexer.sym == Lexer.LESS:
+        if self.lexer.sym == Token.LESS:
             self.lexer.next_token()
-            n = Node(Parser.LT, op1=n, op2=self.calculate())
+            n = Node(NodeType.LT, op1=n, op2=self.calculate())
         return n
 
     def expr(self):
-        if self.lexer.sym != Lexer.ID:
+        if self.lexer.sym != Token.ID:
             return self.test()
         n = self.test()
-        if n.kind == Parser.VAR and self.lexer.sym == Lexer.EQUAL:
+        if n.kind == NodeType.VAR and self.lexer.sym == Token.EQUAL:
             self.lexer.next_token()
-            n = Node(Parser.SET, op1=n, op2=self.expr())
+            n = Node(NodeType.SET, op1=n, op2=self.expr())
         return n
 
     def paren_expr(self):
-        if self.lexer.sym != Lexer.LPAR:
+        if self.lexer.sym != Token.LPAR:
             self.error('"(" expected')
         self.lexer.next_token()
         n = self.expr()
-        if self.lexer.sym != Lexer.RPAR:
+        if self.lexer.sym != Token.RPAR:
             self.error('")" expected')
         self.lexer.next_token()
         return n
@@ -83,52 +68,52 @@ class Parser:
         Разбор выражения, вернет узел или None
         :return:
         """
-        if self.lexer.sym == Lexer.IF:
-            n = Node(Parser.IF1)
+        if self.lexer.sym == Token.IF:
+            n = Node(NodeType.IF1)
             self.lexer.next_token()
             n.op1 = self.paren_expr()
             n.op2 = self.statement()
-            if self.lexer.sym == Lexer.ELSE:
-                n.kind = Parser.IF2
+            if self.lexer.sym == Token.ELSE:
+                n.kind = NodeType.IF2
                 self.lexer.next_token()
                 n.op3 = self.statement()
 
-        elif self.lexer.sym == Lexer.WHILE:
-            n = Node(Parser.WHILE)
+        elif self.lexer.sym == Token.WHILE:
+            n = Node(NodeType.WHILE)
             self.lexer.next_token()
             n.op1 = self.paren_expr()
             n.op2 = self.statement()
 
-        elif self.lexer.sym == Lexer.DO:
-            n = Node(Parser.DO)
+        elif self.lexer.sym == Token.DO:
+            n = Node(NodeType.DO)
             self.lexer.next_token()
             n.op1 = self.statement()
-            if self.lexer.sym != Lexer.WHILE:
+            if self.lexer.sym != Token.WHILE:
                 self.error('"while" expected')
             self.lexer.next_token()
             n.op2 = self.paren_expr()
-            if self.lexer.sym != Lexer.SEMICOLON:
+            if self.lexer.sym != Token.SEMICOLON:
                 self.error('";" expected')
 
-        elif self.lexer.sym == Lexer.SEMICOLON:
-            n = Node(Parser.EMPTY)
+        elif self.lexer.sym == Token.SEMICOLON:
+            n = Node(NodeType.EMPTY)
             self.lexer.next_token()
 
-        elif self.lexer.sym == Lexer.LBRA:
-            n = Node(Parser.EMPTY)
+        elif self.lexer.sym == Token.LBRA:
+            n = Node(NodeType.EMPTY)
             self.lexer.next_token()
-            while self.lexer.sym != Lexer.RBRA:
-                n = Node(Parser.SEQ, op1=n, op2=self.statement())
+            while self.lexer.sym != Token.RBRA:
+                n = Node(NodeType.SEQ, op1=n, op2=self.statement())
             self.lexer.next_token()
 
-        elif self.lexer.sym == Lexer.PRINT:
-            n = Node(Parser.PRINT)
+        elif self.lexer.sym == Token.PRINT:
+            n = Node(NodeType.PRINT)
             self.lexer.next_token()
             n.op1 = self.paren_expr()
 
         else:
-            n = Node(Parser.EXPR, op1=self.expr())
-            if self.lexer.sym != Lexer.SEMICOLON:
+            n = Node(NodeType.EXPR, op1=self.expr())
+            if self.lexer.sym != Token.SEMICOLON:
                 self.error('";" expected')
             self.lexer.next_token()
 
@@ -140,7 +125,7 @@ class Parser:
         :return: дерево разбора
         """
         self.lexer.next_token()
-        node = Node(Parser.PROG, op1=self.statement())
-        if (self.lexer.sym != Lexer.EOF):
+        node = Node(NodeType.PROGRAM, op1=self.statement())
+        if self.lexer.sym != Token.EOF:
             self.error("Invalid statement syntax")
         return node
