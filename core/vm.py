@@ -2,6 +2,9 @@ from .asm import ASM
 
 
 class VirtualMachine:
+    def __init__(self, EPS=0.00001):
+        self.EPS = EPS
+
     def run(self, program):
         var = ['$' for i in range(26)] #TODO заменить на объект
         stack = []
@@ -45,6 +48,15 @@ class VirtualMachine:
                     stack[-2] = 1
                 else:
                     stack[-2] = 0
+                stack.pop()
+                pc += 1
+
+            elif op == ASM.ICMPR:
+                if abs(stack[-2] - stack[-1]) < self.EPS:
+                    stack[-2] = 1
+                else:
+                    stack[-2] = 0
+
                 stack.pop()
                 pc += 1
 

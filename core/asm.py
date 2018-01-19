@@ -32,3 +32,4 @@ class ASM(IntEnum):
     HALT = 11
     IMULTI = 12
     IRT = 13
+    ICMPR = 15

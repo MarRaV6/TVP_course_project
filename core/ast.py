@@ -19,6 +19,7 @@ class NodeType(IntEnum):
     PROGRAM = 14
     MULTI = 15
     RT = 16
+    CMPR = 18
 
 
 class Node:

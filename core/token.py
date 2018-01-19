@@ -21,4 +21,4 @@ class Token(IntEnum):
     PRINT = 16
     EOF = 17
     MORE = 18
-
+    CMPR = 20

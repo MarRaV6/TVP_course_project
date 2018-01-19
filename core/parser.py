@@ -42,18 +42,26 @@ class Parser:
         if self.lexer.sym == Token.LESS:
             self.lexer.next_token()
             n = Node(NodeType.LT, op1=n, op2=self.calculate())
+
         elif self.lexer.sym == Token.MORE:
             self.lexer.next_token()
             n = Node(NodeType.RT, op1=n, op2=self.calculate())
+
+        elif self.lexer.sym == Token.CMPR:
+            self.lexer.next_token()
+            n = Node(NodeType.CMPR, op1=n, op2=self.calculate())
+
         return n
 
     def expr(self):
         if self.lexer.sym != Token.ID:
             return self.test()
+
         n = self.test()
         if n.kind == NodeType.VAR and self.lexer.sym == Token.EQUAL:
             self.lexer.next_token()
             n = Node(NodeType.SET, op1=n, op2=self.expr())
+
         return n
 
     def paren_expr(self):
