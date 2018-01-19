@@ -27,13 +27,15 @@ class Parser:
     def calculate(self):
         n = self.term()
         while self.lexer.sym == Token.PLUS or self.lexer.sym == Token.MINUS or self.lexer.sym == Token.MULTI \
-                or self.lexer.sym == Token.SEG:
+                or self.lexer.sym == Token.SEG or self.lexer.sym == Token.MOD:
             if self.lexer.sym == Token.PLUS:
                 kind = NodeType.ADD
             elif self.lexer.sym == Token.MINUS:
                 kind = NodeType.SUB
             elif self.lexer.sym == Token.MULTI:
                 kind = NodeType.MULTI
+            elif self.lexer.sym == Token.MOD:
+                kind = NodeType.MOD
             else:
                 kind = NodeType.SEG
             self.lexer.next_token()

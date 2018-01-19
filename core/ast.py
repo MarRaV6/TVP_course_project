@@ -21,8 +21,8 @@ class NodeType(IntEnum):
     RT = 16
     SEG = 17 #обычное деление
     CMPR = 18
+    MOD = 19
     #DIV = 18 #
-    #MOD = 19
 
 
 class Node:

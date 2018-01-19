@@ -34,3 +34,4 @@ class ASM(IntEnum):
     ISEG = 13
     IRT = 14
     ICMPR = 15
+    IMOD = 16

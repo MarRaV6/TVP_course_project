@@ -23,3 +23,4 @@ class Token(IntEnum):
     EOF = 18
     MORE = 19
     CMPR = 20
+    MOD = 21

@@ -44,6 +44,11 @@ class Compiler:
             self.compile(node.op2)
             self.gen(ASM.ISEG)
 
+        elif node.kind == NodeType.MOD:
+            self.compile(node.op1)
+            self.compile(node.op2)
+            self.gen(ASM.IMOD)
+
         elif node.kind == NodeType.LT:
             self.compile(node.op1)
             self.compile(node.op2)

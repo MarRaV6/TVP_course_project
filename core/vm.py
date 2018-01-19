@@ -38,6 +38,9 @@ class VirtualMachine:
             elif op == ASM.ISEG:
                 stack[-2] /= stack[-1]; stack.pop(); pc += 1
 
+            elif op == ASM.IMOD:
+                stack[-2] %= stack[-1]; stack.pop(); pc += 1
+
             elif op == ASM.ILT:
                 if stack[-2] < stack[-1]:
                     stack[-2] = 1
