@@ -35,10 +35,10 @@ class Lexer:
     def program_text(self):
         return self._program_text
 
-    def error(self, msg):
+    def _error(self, msg):
         raise LexerError('Lexer error: {}\nCurrent sym: {}'.format(msg, self._current_symbol))
 
-    def getc(self):
+    def _getc(self):
         try:
             self._ch = self._program_text[self._current_symbol]
             self._current_symbol += 1
@@ -53,11 +53,11 @@ class Lexer:
                 self._sym = Token.EOF
 
             elif self._ch.isspace():
-                self.getc()
+                self._getc()
 
             elif self._ch in Lexer.SYMBOLS:
                 self._sym = Lexer.SYMBOLS[self._ch]
-                self.getc()
+                self._getc()
 
             elif self._ch.isdigit() or (self._ch == '0'):
                 intval = 0
@@ -67,14 +67,14 @@ class Lexer:
                 while self._ch.isdigit() or (self._ch == '.') or (self._ch == '0'):
                     if self._ch == '.':
                         find_point = False
-                        self.getc()
+                        self._getc()
                     else:
                         if find_point:
                             intval = intval * 10 + int(self._ch)
                         else:
                             floatval = floatval + (0.1 ** i) * int(self._ch)
                             i += 1
-                        self.getc()
+                        self._getc()
 
                 self._value = intval if find_point else intval + floatval
                 self._sym = Token.NUM
@@ -83,7 +83,7 @@ class Lexer:
                 ident = ''
                 while self._ch.isalpha():
                     ident = ident + self._ch.lower()
-                    self.getc()
+                    self._getc()
 
                 if ident in Lexer.WORDS:
                     self._sym = Lexer.WORDS[ident]
@@ -94,6 +94,6 @@ class Lexer:
                     self._value = ord(ident) - ord('a')
 
                 else:
-                    self.error('Unknown identifier: ' + ident)
+                    self._error('Unknown identifier: ' + ident)
             else:
-                self.error('Unexpected symbol: ' + self._ch)
+                self._error('Unexpected symbol: ' + self._ch)

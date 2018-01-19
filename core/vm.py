@@ -2,13 +2,21 @@ from .asm import ASM
 
 
 class VirtualMachine:
+    """
+    Виртуальная машина, выполняет инструкции на ассемблерном языке
+    """
     def __init__(self, EPS=0.00001):
+        # Параметр точности для мягкого сравнения
         self.EPS = EPS
 
     def run(self, program):
-        var = ['$' for i in range(26)]
-        stack = []
-        pc = 0
+        """
+        :param program: Список байтов программы
+        :return: Состояние переменных после исполнения
+        """
+        var = ['$' for _ in range(26)]  # Начальная инициализация переменных
+        stack = []  # Стек программы
+        pc = 0  # Указатель на текущий байт исполняемой программы
         while True:
             op = ASM(program[pc])
             if pc < len(program) - 1:

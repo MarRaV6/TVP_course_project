@@ -11,10 +11,7 @@
 import os
 from os import path as osp
 
-from core.compiler import Compiler
-from core.lexer import Lexer
-from core.parser import Parser
-from core.vm import VirtualMachine
+from core import Compiler, Lexer, Parser, VirtualMachine
 
 test_dir = 'test/'
 

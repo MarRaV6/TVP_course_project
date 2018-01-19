@@ -19,14 +19,24 @@ class NodeType(IntEnum):
     PROGRAM = 14
     MULTI = 15
     RT = 16
-    SEG = 17 #обычное деление
-    CMPR = 18
-    MOD = 19
+    SEG = 17  # Обычное деление
+    CMPR = 18  # Мягкое сравнение
+    MOD = 19  # Взятие остатка
     #DIV = 18 #
 
 
 class Node:
-    def __init__(self, kind, value=None, op1=None, op2=None, op3=None):
+    """
+    Узел для АСТ
+    """
+    def __init__(self, kind: NodeType, value=None, op1=None, op2=None, op3=None):
+        """
+        :param kind: Тип узла
+        :param value: Значение (напр. значение константы в случае присваивания)
+        :param op1: Первый
+        :param op2: Второй
+        :param op3: И третий возможный потомок
+        """
         self.kind = kind
         self.value = value
         self.op1 = op1

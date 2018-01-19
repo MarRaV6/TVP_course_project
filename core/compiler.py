@@ -5,7 +5,7 @@ from .asm import ASM
 
 class Compiler:
     """
-    Компилятор, преобразует АСТ в ассемблерный код виртуальной машины
+    Компилятор, компилирует АСТ в ассемблерный язык виртуальной машины
     """
     def __init__(self):
         self._program = []
@@ -32,6 +32,9 @@ class Compiler:
         self._program[addr] = value
 
     def compile(self, node):
+        """
+        :param node: Корневой узел АСТ
+        """
         if node.kind == NodeType.VAR:
             self._gen_command(ASM.IFETCH)
             self._gen_addr(node.value)
